@@ -3,7 +3,37 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/video-cnms.ts": {
+      "includeFiles": "protected/videos/CNMS.mp4",
+      "maxDuration": 60
+    },
+    "api/video-operations-advisor.ts": {
+      "includeFiles": "protected/videos/operations-advisor.mp4",
+      "maxDuration": 60
+    },
+    "api/image.ts": {
+      "includeFiles": "protected/img/**",
+      "maxDuration": 15
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/videos/CNMS.mp4",
+      "destination": "/api/video-cnms"
+    },
+    {
+      "source": "/videos/operations-advisor.mp4",
+      "destination": "/api/video-operations-advisor"
+    },
+    {
+      "source": "/img/(.*)",
+      "destination": "/api/image?name=$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, RefreshCw } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, RefreshCw, ShieldAlert } from 'lucide-react';
 import {
   trackProductDemoClick,
   trackDemoVideoStart,
@@ -13,6 +13,7 @@ interface VideoPlayerProps {
   accentColor?: 'cyan' | 'purple';
   callToActionLabel?: string;
   className?: string;
+  isExpired?: boolean;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -23,6 +24,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   accentColor = 'cyan',
   callToActionLabel,
   className = '',
+  isExpired = false,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -38,6 +40,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const isCyan = accentColor === 'cyan';
   const accentHex = isCyan ? '#38bdf8' : '#a855f7';
 
+  // When session expires, immediately halt playback and purge video element
+  useEffect(() => {
+    if (isExpired && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.removeAttribute('src');
+      videoRef.current.load();
+      setIsPlaying(false);
+    }
+  }, [isExpired]);
+
   useEffect(() => {
     setHasError(false);
     setIsPlaying(false);
@@ -46,6 +58,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [src]);
 
   const handlePlay = () => {
+    if (isExpired) return;
     setIsPlaying(true);
     // Listen strictly to native playback start, fire once per page session
     trackDemoVideoStart(productLabel);
@@ -56,11 +69,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   const togglePlay = () => {
+    if (isExpired) return;
     const video = videoRef.current;
     if (!video) return;
 
     if (video.paused || video.ended) {
-      // User clicked play control
       trackProductDemoClick(productLabel);
       video.play().catch(() => setHasError(true));
     } else {
@@ -99,6 +112,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isExpired) return;
     const video = videoRef.current;
     if (!video) return;
     const target = parseFloat(e.target.value);
@@ -119,6 +133,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const playLabel = callToActionLabel || (productName === 'cnms_v2' ? 'Watch CNMS v2.0 Demo' : 'Watch Operations Advisor Demo');
 
+  if (isExpired) {
+    return (
+      <div className={`relative w-full aspect-video bg-[#05070B] hairline-all select-none overflow-hidden flex flex-col items-center justify-center p-6 text-center ${className}`}>
+        <ShieldAlert className="w-8 h-8 text-amber-400 mb-3" />
+        <h4 className="text-sm font-medium font-display text-white mb-1">
+          Demonstration Stream Restricted
+        </h4>
+        <p className="text-xs text-neutral-400 max-w-sm mb-4">
+          Your 60-minute preview session has expired. Request an engineer-led technical walkthrough below.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`relative w-full aspect-video bg-[#020305] hairline-all select-none overflow-hidden group ${className}`}
@@ -127,8 +155,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     >
       {hasError ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#07090E]">
-          <p className="text-sm font-medium text-white mb-2">Video Demonstration Unavailable</p>
-          <p className="text-xs text-neutral-400 mb-4 font-mono">{src}</p>
+          <p className="text-sm font-medium text-white mb-2">Video Stream Authorization Failed</p>
+          <p className="text-xs text-neutral-400 mb-4 font-mono">
+            Access to protected demonstration streams requires an active 60-minute session.
+          </p>
           <button
             onClick={() => {
               setHasError(false);
@@ -137,7 +167,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#222834] text-xs text-neutral-300 hover:text-white"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Reload Stream</span>
+            <span>Retry Connection</span>
           </button>
         </div>
       ) : (

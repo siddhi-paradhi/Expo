@@ -4,9 +4,13 @@ import { ArrowUpRight } from 'lucide-react';
 
 interface OperationsAdvisorSectionProps {
   onRequestDemo: (product: 'operations_advisor') => void;
+  isExpired?: boolean;
 }
 
-export const OperationsAdvisorSection: React.FC<OperationsAdvisorSectionProps> = ({ onRequestDemo }) => {
+export const OperationsAdvisorSection: React.FC<OperationsAdvisorSectionProps> = ({
+  onRequestDemo,
+  isExpired = false,
+}) => {
   const capabilities = [
     {
       num: '01',
@@ -105,12 +109,13 @@ export const OperationsAdvisorSection: React.FC<OperationsAdvisorSectionProps> =
 
             {/* Expansive Playable Video Frame */}
             <VideoPlayer
-              src="/videos/operations-advisor.mp4"
+              src="/api/video-operations-advisor"
               title="Operations Advisor Co-Pilot Walkthrough"
               productName="operations_advisor"
               accentColor="purple"
               callToActionLabel="Watch Operations Advisor Demo"
               className="w-full"
+              isExpired={isExpired}
             />
 
             {/* Video Meta Strip */}

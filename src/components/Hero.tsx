@@ -118,7 +118,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onRequestDemo }) => {
                 </span>
               </div>
 
-              {/* Unobstructed Genuine Screenshot Frame */}
+              {/* Unobstructed Genuine Screenshot Frame (Served through authenticated API) */}
               <div
                 onClick={() => {
                   trackProductDemoClick('CNMS');
@@ -127,7 +127,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onRequestDemo }) => {
                 className="relative bg-black overflow-hidden cursor-pointer"
               >
                 <img
-                  src="/img/Earth station map.png"
+                  src="/api/image?name=Earth%20station%20map.png"
                   alt="CNMS v2.0 Geospatial Earth Station and Antenna Tracking Interface"
                   className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.01]"
                 />
