@@ -4,48 +4,49 @@ import { ArrowUpRight, Maximize2, X } from 'lucide-react';
 
 interface CNMSSectionProps {
   onRequestDemo: (product: 'cnms_v2') => void;
+  isExpired?: boolean;
 }
 
-export const CNMSSection: React.FC<CNMSSectionProps> = ({ onRequestDemo }) => {
+export const CNMSSection: React.FC<CNMSSectionProps> = ({ onRequestDemo, isExpired = false }) => {
   const [selectedScreenIdx, setSelectedScreenIdx] = useState(0);
   const [fullscreenModal, setFullscreenModal] = useState(false);
 
-  // Verified authentic CNMS v2.0 interface captures
+  // Verified authentic CNMS v2.0 interface captures (served through session-validated API)
   const cnmsScreens = [
     {
       title: 'Dynamic Network Topology',
       subtitle: 'Waveguide & Link Mapping',
-      src: '/img/Network Topolgy.png',
+      src: '/api/image?name=Network%20Topolgy.png',
       description: 'Interactive topological mapping of switches, transponders, waveguides, and carrier links with live route status.',
     },
     {
       title: 'Centralised Telemetry Dashboard',
       subtitle: 'Single-Pane Operational Console',
-      src: '/img/Dashboard.png',
+      src: '/api/image?name=Dashboard.png',
       description: 'Consolidated overview aggregating ground station telemetry, active link states, and critical equipment health.',
     },
     {
       title: 'Geospatial Earth Station Maps',
       subtitle: 'Ground Segment Footprint Tracking',
-      src: '/img/Earth station map.png',
+      src: '/api/image?name=Earth%20station%20map.png',
       description: 'Geospatial tracking of satellite antennas and teleports with live pointing azimuth and elevation coordinates.',
     },
     {
       title: 'Device Inventory & Port Details',
       subtitle: 'Hardware Asset Governance',
-      src: '/img/Device inventory details.png',
+      src: '/api/image?name=Device%20inventory%20details.png',
       description: 'Granular hardware asset registry detailing chassis configurations, IP registers, and transceiver metrics.',
     },
     {
       title: 'Live Alerts & Event Ingestion',
       subtitle: 'Sub-Second SNMP Triage',
-      src: '/img/Alerts and live events.png',
+      src: '/api/image?name=Alerts%20and%20live%20events.png',
       description: 'Real-time incident bus streaming sub-second SNMP traps classified into Critical, Major, and Minor tiers.',
     },
     {
       title: 'RF & Carrier Performance',
       subtitle: 'Link Telemetry Analytics',
-      src: '/img/Performance.png',
+      src: '/api/image?name=Performance.png',
       description: 'Continuous RF analytics monitoring Eb/N0 margins, carrier-to-noise density (C/N0), and historical attenuation.',
     },
   ];
@@ -113,12 +114,13 @@ export const CNMSSection: React.FC<CNMSSectionProps> = ({ onRequestDemo }) => {
 
             {/* Expansive Playable Video Frame */}
             <VideoPlayer
-              src="/videos/CNMS.mp4"
+              src="/api/video-cnms"
               title="CNMS v2.0 Platform Walkthrough"
               productName="cnms_v2"
               accentColor="cyan"
               callToActionLabel="Watch CNMS v2.0 Demo"
               className="w-full"
+              isExpired={isExpired}
             />
 
             {/* Video Meta Strip */}
